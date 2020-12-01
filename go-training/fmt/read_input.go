@@ -1,12 +1,22 @@
-package read_input
+package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 )
 
-func main() {
-	var str string
-	fmt.Scan(str)
+// ReadFromStdinOneLine reads from stdin only one line and print it.
+func ReadFromStdinOneLine() string {
+	scanner := bufio.NewScanner(os.Stdin)
+	fmt.Print("Please type something. : ")
+	scanner.Scan()
+	input := scanner.Text()
+	fmt.Println("input is", input)
+	return input
+}
 
-	fmt.Println(str)
+func main() {
+	var inputFromStdin = ReadFromStdinOneLine()
+	fmt.Println("result from ReadFromStdinOneLine is ", inputFromStdin)
 }

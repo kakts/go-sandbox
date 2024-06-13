@@ -18,6 +18,8 @@ func main() {
 	//	loopSliceOfPointer()
 
 	loop.MapLoop()
+
+	loop.AddDataToMapInLoop()
 }
 
 func loopSliceOfPointer() {

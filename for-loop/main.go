@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"sync"
+
+	"github.com/kakts/for-loop/src/loop"
 )
 
 type User struct {
@@ -13,27 +15,9 @@ type User struct {
 // for rangeでのループ変数は、イテレーションごとに変数が再利用されるため、ポインタを使っても値が更新される
 func main() {
 
-	users := []*User{
-		{Name: "Alice", Age: 25},
-		{Name: "Bob", Age: 30},
-		{Name: "Charlie", Age: 35},
-	}
+	//	loopSliceOfPointer()
 
-	var wg sync.WaitGroup
-	wg.Add(1)
-
-	go func() {
-		defer wg.Done()
-		for i, user := range users {
-			fmt.Println("i = ", i)
-			user.Age = 1000
-			fmt.Printf("user: %v\n", *user)
-
-			fmt.Printf("pointer of user: %p\n", &user)
-		}
-	}()
-
-	wg.Wait()
+	loop.MapLoop()
 }
 
 func loopSliceOfPointer() {

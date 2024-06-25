@@ -1,1 +1,3 @@
-server.key
+*.key
+*.csr
+*.crt

@@ -10,7 +10,7 @@ csr:
 # crtファイルの生成
 .PHONY: crt
 crt:
-	openssl x509 -req -days 10 -in server.csr -signkey server.key -out server.crt
+	openssl x509 -req -days 10 -in server.csr -signkey server.key -out server.crt -extfile SAN.txt
 
 # crtファイルの確認
 .PHONY: check

@@ -30,8 +30,8 @@ func main() {
 			count++
 			res, err := getLock(ctx, rdb)
 			if err != nil {
-				log.Fatalf("Failed to get lock. err: %v", err)
-				panic(err)
+				log.Printf("Failed to get lock. err: %v", err)
+				continue
 			}
 
 			if !res {

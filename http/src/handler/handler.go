@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"sync"
 )
@@ -31,7 +32,7 @@ type Comment struct {
 // GetComments はコメントをjson形式で返す
 func GetComments(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-
+	log.Printf("request received: %s %s", r.Method, r.URL.Path)
 	// 読み取り時に書き込みがあることを考慮し、ロックする
 	mutex.RLock()
 	if err := json.NewEncoder(w).Encode(comments); err != nil {

@@ -6,4 +6,5 @@ func main() {
 	// goroutine.WaitGroup()
 
 	goroutine.RWMutexLock()
+	goroutine.Cond()
 }

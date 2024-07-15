@@ -5,6 +5,5 @@ import "github.com/kakts/go-sandbox/goroutine/src/goroutine"
 func main() {
 	// goroutine.WaitGroup()
 
-	goroutine.RWMutexLock()
-	goroutine.Cond()
+	goroutine.CondButton()
 }

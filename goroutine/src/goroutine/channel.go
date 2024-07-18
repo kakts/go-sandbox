@@ -86,3 +86,33 @@ func BufferedChannel() {
 		fmt.Fprintf(&stdoutBuff, "Received: %v\n", integer)
 	}
 }
+
+func ChanOwner() {
+	// 読み取り専用チャネルを初期化して返す
+	chanOwner := func() <-chan int {
+		// バッファ付きチャネルの初期化
+		resultStream := make(chan int, 5)
+
+		// resultStreamへの書き込みを行うgoroutineを起動
+		// goroutineよりも先にresultStreamを生成した
+		// 外側のchanOwner関数によってカプセル化している
+		go func() {
+			// resultStreamを使い終わったらクローズ
+			defer close(resultStream)
+			for i := 0; i <= 5; i++ {
+				resultStream <- i
+			}
+		}()
+
+		// 読み込み専用チャネルの返却
+		return resultStream
+	}
+
+	resultStream := chanOwner()
+
+	for result := range resultStream {
+		fmt.Printf("Received: %d\n", result)
+	}
+
+	fmt.Println("Done receiving!")
+}

@@ -1,6 +1,10 @@
 package goroutine
 
-import "fmt"
+import (
+	"bytes"
+	"fmt"
+	"sync"
+)
 
 // AdhocRestriction アドホック拘束の例
 func AdhocRestriction() {
@@ -57,4 +61,25 @@ func LexicalRestriction() {
 	// chanOwner関数を呼び出し、その結果をconsumer関数に渡す
 	results := chanOwner()
 	consumer(results)
+}
+
+// BytesRestriction 並行安全でないbytes.Bufferを使った拘束の例
+func BytesRestriction() {
+	printData := func(wg *sync.WaitGroup, data []byte) {
+		defer wg.Done()
+
+		var buff bytes.Buffer
+		for _, b := range data {
+			fmt.Fprintf(&buff, "%c", b)
+		}
+		fmt.Println(buff.String())
+	}
+
+	var wg sync.WaigGroup
+	wg.Add(2)
+
+	data := []byte("golang")
+	// dataを2つに分割し、goroutineに渡す
+	go printData(&wg, data[:3])
+	go printData(&wg, data[3:])
 }

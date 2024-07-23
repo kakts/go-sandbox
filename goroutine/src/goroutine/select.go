@@ -30,6 +30,9 @@ func MultiSelect() {
 
 	var c1Count, c2Count int
 	for i := 1000; i >= 0; i-- {
+
+		// slectで複数のcaseがあり、それぞれが準備できている場合
+		// 疑似乱数によりどちらを選択するかが決まる
 		select {
 		case <-c1:
 			c1Count++

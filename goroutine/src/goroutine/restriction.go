@@ -75,7 +75,7 @@ func BytesRestriction() {
 		fmt.Println(buff.String())
 	}
 
-	var wg sync.WaigGroup
+	var wg sync.WaitGroup
 	wg.Add(2)
 
 	data := []byte("golang")

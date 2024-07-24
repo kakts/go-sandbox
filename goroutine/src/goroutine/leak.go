@@ -99,3 +99,42 @@ func WriteChannelLeak() {
 		fmt.Printf("%d: %d\n", i, <-randStream)
 	}
 }
+
+// WriteChannelLeakの問題を解決するための修正
+func WriteChannelLeakFix() {
+	/**
+	 * 生産者のgoroutineに終了を伝えるチャネル doneを提供することで、
+	 * 呼び出し元のgoroutineからチャネルからの読み込み停止を通知する
+	 */
+	newRandStream := func(done <-chan interface{}) <-chan int {
+		randStream := make(chan int)
+		go func() {
+			defer fmt.Println("newRandStream closure exited.")
+			defer close(randStream)
+
+			for {
+				select {
+				case randStream <- rand.Int(): // 何もしない
+				case <-done:
+					return
+				}
+			}
+		}()
+
+		return randStream
+	}
+
+	done := make(chan interface{})
+	randStream := newRandStream(done)
+
+	fmt.Println("3 random ints:")
+	for i := 1; i <= 3; i++ {
+		fmt.Printf("%d: %d\n", i, <-randStream)
+	}
+	fmt.Println("Cancelling the randStream goroutine...")
+	// 3回読み込んだ後にdoneチャネルを閉じることで、goroutineに終了を通知
+	close(done)
+
+	// 処理が実行中であることをシミュレート
+	time.Sleep(1 * time.Second)
+}

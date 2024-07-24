@@ -2,6 +2,7 @@ package goroutine
 
 import (
 	"fmt"
+	"math/rand"
 	"time"
 )
 
@@ -70,4 +71,31 @@ func GoroutineLeakFix() {
 	// terminatedチャネルが閉じられるまで待機
 	<-terminated
 	fmt.Println("Done.")
+}
+
+// goroutineがチャネルに対して書き込みを行おうとしてブロックする例
+func WriteChannelLeak() {
+	newRandStream := func() <-chan int {
+		randStream := make(chan int)
+		go func() {
+			// ここのfmt.Printlnは決して実行されない
+			// 利用側で3回の読み込みしてそのあとは読み込まないため
+			defer fmt.Println("newRandStream closure exited.")
+			defer close(randStream)
+
+			for {
+				// 3回のみ送信できるが、その後は呼び出し側で読み込まないため、ブロックされる
+				randStream <- rand.Int()
+			}
+		}()
+
+		return randStream
+	}
+
+	randStream := newRandStream()
+	fmt.Println("3 random ints:")
+	for i := 1; i <= 3; i++ {
+		// ここで3回チャネルから読み込んだ後に、goroutine側に停止していいと伝える方法がない
+		fmt.Printf("%d: %d\n", i, <-randStream)
+	}
 }

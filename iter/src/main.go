@@ -14,11 +14,29 @@ func iterator(yield func(int) bool) {
 	yield(3)
 }
 
+type Dog struct {
+	Name string
+	List []string
+}
 
+func (d *Dog) iterator2(yield func(string) bool) {
+	for v := range d.List {
+		yield(v)
+	}
+}
 
 func main() {
 	for i := range iterator {
 		fmt.Printf("for loop executed: %i ", i)
 		fmt.Println(i)
+	}
+
+	dog := Dog{
+		Name: "John",
+		List: []string{"A", "B", "C"},
+	}
+
+	for v := range dog.iterator {
+		fmt.Println(v)
 	}
 }

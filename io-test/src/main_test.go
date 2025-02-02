@@ -1,8 +1,11 @@
 package main
 
 import (
+	"bytes"
+	"errors"
 	"testing"
 	"testing/fstest"
+	"testing/iotest"
 )
 
 func TestCount(t *testing.T) {
@@ -38,5 +41,29 @@ func assertCount(t *testing.T, got, want int) {
 	t.Helper()
 	if got != want {
 		t.Errorf("got %d, want %d", got, want)
+	}
+}
+
+func TestToUpperWithErrReader(t *testing.T) {
+	// 読み込み処理が失敗するio.Reader
+	src := iotest.ErrReader(errors.New("failed read file."))
+	dst := bytes.NewBufferString("")
+
+	err := toUpper(src, dst)
+	if err == nil {
+		t.Errorf("no error occurred")
+	}
+}
+
+func TestToUpperWithTimeoutReader(t *testing.T) {
+	// タイムアウトを発生させるio.Reader
+	src := iotest.NewReadLogger("read log", iotest.TimeoutReader(bytes.NewReader([]byte("hello"))))
+
+	dst := bytes.NewBufferString("")
+
+	err := toUpper(src, dst)
+
+	if err == nil {
+		t.Errorf("no error occurred")
 	}
 }
